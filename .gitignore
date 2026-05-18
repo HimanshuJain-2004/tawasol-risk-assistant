@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+.venv/
+venv/
+env/
+*.egg-info/
+.DS_Store
+Thumbs.db
+chroma_db/
+data/kev_cache.json
+*.log
+.pytest_cache/

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: tawasol-risk-assistant
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python setup.py
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT --workers 1
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false          # Set this manually in Render dashboard
+      - key: USE_LLM
+        value: "true"
+      - key: DATA_DIR
+        value: "./data"
+      - key: CHROMA_DIR
+        value: "./chroma_db"
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+    healthCheckPath: /api/health

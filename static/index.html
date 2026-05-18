@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TawasolPay — Cyber Risk Board Briefing</title>
+  <meta name="description" content="AI-powered cyber risk prioritisation dashboard for TawasolPay CISO board briefings. Real-time threat intelligence, NIST SP 800-53 guidance, and composite risk scoring." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🛡️</div>
+      <div>
+        <div class="logo-text">Tawasol<span>Pay</span></div>
+        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;">Board Risk Briefing — Live</div>
+      </div>
+    </div>
+    <div class="header-status">
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        Live Analysis
+      </div>
+      <div class="header-time" id="clock">--:--:--</div>
+      <button class="btn-refresh" id="btn-refresh" onclick="refreshRisks()">
+        <span>↻</span> Refresh
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── App Layout ──────────────────────────────────────────────────────── -->
+<div class="app-layout">
+
+  <!-- Main Risk Panel -->
+  <main class="main-content">
+    <div class="section-header">
+      <h1 class="section-title">
+        <span class="icon">⚠️</span>
+        Top 5 Critical Risks — Ranked
+      </h1>
+      <button class="btn-export" id="btn-report" onclick="downloadReport()">
+        📄 Export Board Report
+      </button>
+    </div>
+
+    <div id="risks-container">
+      <div class="loading-state" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">Analysing threat landscape…</div>
+        <div class="loading-sub">Running risk scoring engine + NIST RAG retrieval</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Stats -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-header">📊 Dashboard Stats</div>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="stat-critical" style="color:#f87171">—</div>
+          <div class="stat-label">Critical Risk</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-ransomware" style="color:#fb923c">—</div>
+          <div class="stat-label">Ransomware</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-internet" style="color:#60a5fa">—</div>
+          <div class="stat-label">Internet Exp.</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-kev" style="color:#fbbf24">—</div>
+          <div class="stat-label">CISA KEV</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Campaigns -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-header">🔴 Active Campaigns</div>
+      <div class="campaign-list" id="campaign-list">
+        <div style="padding:8px;color:var(--text-muted);font-size:0.8rem;">Loading threat intelligence…</div>
+      </div>
+    </div>
+
+    <!-- MDR Advisory -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-header">📋 MDR Advisory Summary</div>
+      <div class="threat-summary">
+        <div class="threat-summary-text" id="threat-summary-text">
+          Loading advisory…
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ── Toast ────────────────────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
