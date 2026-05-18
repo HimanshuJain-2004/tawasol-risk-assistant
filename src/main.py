@@ -152,13 +152,15 @@ def _build_risks() -> list[RiskEntry]:
 
 @app.on_event("startup")
 async def startup_event():
-    """Pre-warm the pipeline on startup."""
-    logger.info("Server starting — pre-warming risk pipeline...")
+    """Pre-warm the pipeline in the background so it doesn't block port binding."""
+    logger.info("Server starting — kicking off background pre-warm...")
+    import asyncio
     try:
-        _build_risks()
-        logger.info("Pipeline ready.")
+        loop = asyncio.get_running_loop()
+        loop.run_in_executor(None, _build_risks)
+        logger.info("Background pipeline warm-up initiated.")
     except Exception as e:
-        logger.error(f"Pipeline pre-warm failed: {e}")
+        logger.error(f"Failed to initiate background warm-up: {e}")
 
 
 @app.get("/", response_class=HTMLResponse)
