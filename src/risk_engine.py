@@ -1,18 +1,3 @@
-"""
-risk_engine.py — Composite risk scoring and Top-5 ranking for TawasolPay.
-
-Scoring model (6 dimensions, CVSS as tiebreaker only):
-  1. Internet exposure          — 20%
-  2. Active exploit available   — 20%
-  3. Threat actor campaign match— 20%
-  4. Ransomware association     — 15%
-  5. Business service criticality— 15%
-  6. Missing compensating controls— 10%
-  CVSS tiebreaker               — normalised 0-1, used only to break ties
-
-Each dimension returns a 0.0–1.0 score; combined weighted total is 0.0–1.0.
-"""
-
 import logging
 from dataclasses import dataclass, field
 from typing import Optional
@@ -82,7 +67,6 @@ class RiskEntry:
 
 
 def _business_criticality_score(service_name: str, biz_df: pd.DataFrame) -> float:
-    """Score 0–1 from business_services data for a given service name."""
     if biz_df is None or biz_df.empty:
         return 0.5
     row = biz_df[biz_df["business_service"].str.lower() == service_name.lower()]
@@ -110,11 +94,6 @@ def _business_criticality_score(service_name: str, biz_df: pd.DataFrame) -> floa
 
 
 def _missing_controls_score(edr_installed: bool, patch_available: bool) -> float:
-    """
-    Score increases when compensating controls are absent.
-    No EDR + No patch available = 1.0 (worst)
-    EDR + Patch available = 0.0 (best)
-    """
     score = 0.0
     if not edr_installed:
         score += 0.5
@@ -129,9 +108,6 @@ def compute_composite_score(
     ti_matches: pd.DataFrame,
     biz_df: pd.DataFrame,
 ) -> tuple[float, dict, list[str], list[str], bool]:
-    """
-    Returns (composite_score, breakdown_dict, threat_actors, campaign_names, ransomware_linked)
-    """
     breakdown = {}
 
     # 1. Internet exposure

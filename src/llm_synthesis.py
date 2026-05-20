@@ -1,10 +1,3 @@
-"""
-llm_synthesis.py — Generate plain-English risk explanations via Groq (Llama 3).
-
-Falls back to a deterministic template if no API key is configured.
-NOTE: GROQ_API_KEY is read lazily (not at import time) so .env is always loaded first.
-"""
-
 import logging
 import os
 from typing import TYPE_CHECKING
@@ -31,7 +24,6 @@ def _get_groq_client():
 
 
 def _llm_enabled() -> bool:
-    """Check at call time whether LLM should be used."""
     use_llm = os.getenv("USE_LLM", "true").lower() == "true"
     api_key = os.getenv("GROQ_API_KEY", "")
     return use_llm and bool(api_key) and not api_key.startswith("gsk_your")
@@ -74,7 +66,6 @@ Write the board-level explanation now (3-4 sentences, plain English, no headers,
 
 
 def _template_explanation(risk) -> str:
-    """Deterministic template fallback when no LLM key is available."""
     actor_str = f"Threat actor {risk.threat_actors[0]}" if risk.threat_actors else "An active threat actor"
     ransomware_str = " — a ransomware-associated campaign" if risk.ransomware_linked else ""
     kev_str = (
@@ -93,10 +84,6 @@ def _template_explanation(risk) -> str:
 
 
 def generate_explanation(risk, nist_control: dict) -> str:
-    """
-    Generate a plain-English board-level explanation for a risk.
-    Uses Groq Llama-3.1-8b if configured, falls back to template.
-    """
     if not _llm_enabled():
         logger.info(f"Using template explanation for {risk.vuln_id} (LLM disabled or no key).")
         return _template_explanation(risk)

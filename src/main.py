@@ -1,14 +1,3 @@
-"""
-main.py — FastAPI backend for TawasolPay Cyber Risk Assistant.
-
-Endpoints:
-  GET /            → serve UI dashboard
-  GET /api/risks   → return top-5 ranked risks as JSON
-  GET /api/health  → liveness check
-  GET /api/threat-report → return synthetic threat report markdown
-  POST /api/report → generate markdown/plain-text board report
-"""
-
 import json
 import logging
 import os
@@ -64,7 +53,6 @@ _cache_built = False
 
 
 def _ensure_rag_indexed():
-    """Build RAG index if not already done."""
     nist_path = Path(os.getenv("DATA_DIR", "./data")) / "nist_800_53_controls.csv"
     if nist_path.exists() and not is_indexed():
         logger.info("Building NIST RAG index...")
@@ -152,7 +140,6 @@ def _build_risks() -> list[RiskEntry]:
 
 @app.on_event("startup")
 async def startup_event():
-    """Pre-warm the pipeline in the background so it doesn't block port binding."""
     logger.info("Server starting — kicking off background pre-warm...")
     import asyncio
     try:
@@ -165,7 +152,6 @@ async def startup_event():
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_ui():
-    """Serve the main dashboard HTML."""
     index_path = STATIC_DIR / "index.html"
     if not index_path.exists():
         raise HTTPException(status_code=404, detail="UI not found")
@@ -179,7 +165,6 @@ async def health():
 
 @app.get("/api/risks")
 async def get_risks():
-    """Return top-5 ranked cyber risks as JSON."""
     from fastapi.responses import Response
     try:
         risks = _build_risks()
@@ -195,7 +180,6 @@ async def get_risks():
 
 @app.get("/api/threat-report")
 async def get_threat_report():
-    """Return the synthetic MDR threat report as markdown."""
     report_path = Path(os.getenv("DATA_DIR", "./data")) / "synthetic_threat_report.md"
     if not report_path.exists():
         raise HTTPException(status_code=404, detail="Threat report not found")
@@ -204,7 +188,6 @@ async def get_threat_report():
 
 @app.post("/api/report")
 async def generate_board_report():
-    """Generate a full markdown board report from the top-5 risks."""
     try:
         risks = _build_risks()
         report = _build_markdown_report(risks)
@@ -216,7 +199,6 @@ async def generate_board_report():
 
 @app.post("/api/refresh")
 async def refresh_risks():
-    """Force a re-computation of the risk pipeline (clears cache)."""
     global _cached_risks, _cache_built
     _cached_risks = None
     _cache_built = False
@@ -228,7 +210,6 @@ async def refresh_risks():
 
 
 def _json_default(obj):
-    """JSON serializer for objects not serializable by default json module."""
     if hasattr(obj, "item"):  # numpy scalar (bool_, int64, float64, etc.)
         return obj.item()
     if hasattr(obj, "tolist"):  # numpy array

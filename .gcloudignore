@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+.env.example
+__pycache__/
+*.pyc
+chroma_db/
+venv/
+env/
+.gradle/
+.idea/
+.vscode/

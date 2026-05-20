@@ -1,8 +1,3 @@
-"""
-ingest.py — Load and validate all CSV datasets for TawasolPay Risk Assistant.
-Returns clean, typed DataFrames ready for the risk engine.
-"""
-
 import os
 import logging
 import pandas as pd
@@ -14,7 +9,6 @@ DATA_DIR = Path(os.getenv("DATA_DIR", "./data"))
 
 
 def _load_csv(filename: str, required_cols: list[str]) -> pd.DataFrame:
-    """Load a CSV file and validate required columns exist."""
     path = DATA_DIR / filename
     if not path.exists():
         raise FileNotFoundError(f"Required data file not found: {path}")

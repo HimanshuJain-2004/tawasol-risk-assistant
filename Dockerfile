@@ -17,8 +17,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . .
 
-# Run setup (download NIST CSV + build RAG index)
-# This bakes the index into the image — faster cold starts on Render
 RUN python setup.py
 
 # Expose port

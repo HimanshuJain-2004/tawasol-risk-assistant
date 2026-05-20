@@ -1,10 +1,3 @@
-"""
-cisa_kev.py — Fetch and cache the CISA Known Exploited Vulnerabilities catalog.
-
-Source: https://github.com/cisagov/kev-data (JSON format)
-Cached locally to avoid repeated network calls.
-"""
-
 import json
 import logging
 import os
@@ -28,10 +21,6 @@ def _is_cache_fresh() -> bool:
 
 
 def fetch_kev() -> dict:
-    """
-    Return the full KEV catalog as a dict.
-    Uses a local cache to avoid network calls on every restart.
-    """
     if _is_cache_fresh():
         logger.info("Loading KEV catalog from local cache.")
         with open(CACHE_PATH, "r", encoding="utf-8") as f:
@@ -57,11 +46,6 @@ def fetch_kev() -> dict:
 
 
 def get_kev_sets() -> tuple[set[str], set[str]]:
-    """
-    Returns:
-        kev_cves: set of all CVE IDs in KEV
-        kev_ransomware_cves: set of CVE IDs with known ransomware campaign use
-    """
     data = fetch_kev()
     vulns = data.get("vulnerabilities", [])
 

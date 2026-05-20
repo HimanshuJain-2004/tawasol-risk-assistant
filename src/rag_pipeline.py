@@ -1,16 +1,3 @@
-"""
-rag_pipeline.py — LanceDB + sentence-transformers RAG for NIST SP 800-53 Rev. 5.
-
-Embeds NIST control descriptions into a persistent local vector store.
-For each risk, retrieves the most semantically relevant NIST control.
-
-Key design decision:
-  - NIST 800-53 prose descriptions → RAG (semantic similarity needed)
-  - CSV/structured data (assets, vulns, threat intel) → pandas (exact match faster)
-
-Uses LanceDB (pure Python, no C++ required) as the vector store.
-"""
-
 import csv
 import logging
 import os
@@ -89,10 +76,6 @@ def is_indexed() -> bool:
 
 
 def build_index(nist_csv_path: Optional[Path] = None) -> int:
-    """
-    Read NIST 800-53 CSV and embed all controls into LanceDB.
-    Returns number of documents embedded.
-    """
     csv_path = nist_csv_path or NIST_CSV_PATH
     if not csv_path.exists():
         raise FileNotFoundError(
@@ -204,12 +187,6 @@ def retrieve_nist_control(
     top_k: int = 3,
     fallback_keywords: Optional[list[str]] = None,
 ) -> dict:
-    """
-    Retrieve the most relevant NIST SP 800-53 control for a given query string.
-
-    Returns dict with keys: control_id, title, text
-    Falls back to controlled vocabulary if retrieval fails.
-    """
     try:
         model = _get_embed_model()
         query_vec = model.encode([query])[0].tolist()
@@ -230,7 +207,6 @@ def retrieve_nist_control(
 
 
 def _fallback_control(keywords: list[str]) -> dict:
-    """Return a fallback NIST control based on keyword matching."""
     text_lower = " ".join(keywords).lower()
     for keyword, control_id in FALLBACK_CONTROLS.items():
         if keyword in text_lower:

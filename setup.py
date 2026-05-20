@@ -1,15 +1,3 @@
-"""
-setup.py — Download NIST SP 800-53 Rev. 5 controls CSV and build LanceDB RAG index.
-
-Run this ONCE before starting the server:
-    python setup.py
-
-What it does:
-1. Downloads NIST SP 800-53 Rev. 5 controls CSV from NIST CSRC (official URL)
-2. Parses and validates the CSV
-3. Embeds all controls into LanceDB using sentence-transformers (all-MiniLM-L6-v2)
-"""
-
 import csv
 import logging
 import os
@@ -268,7 +256,7 @@ def _write_builtin_nist_csv():
 def build_rag_index(force: bool = False):
     """Build the LanceDB RAG index from the NIST CSV."""
     sys.path.insert(0, str(Path(__file__).parent / "src"))
-    from rag_pipeline import build_index, is_indexed
+    from src.rag_pipeline import build_index, is_indexed
 
     if not force and is_indexed():
         logger.info("RAG index already built. Use --force to rebuild.")
